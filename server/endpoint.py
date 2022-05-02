@@ -154,7 +154,7 @@ def get_seats(chart_cd: str):
   return __mk_responce_json(seats_info)
 
 @app.post("/api/users")
-def register_user(chart_cd: str, seat_user_info: model.SeatUserInfo):
+def register_user(chart_cd: str, seat_user_info: model.UserRegisterInfo):
   try:
     seating_chart_service.register_user(chart_cd, seat_user_info)
   except SeatingChartException as se:

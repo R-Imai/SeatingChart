@@ -1,11 +1,11 @@
-type SeatInfo = {
+interface SeatInfo {
   id: string;
   x: number;
   y: number;
-  userCd?: string,
-  name?: string;
-  furigana?: string;
-  status? : SeatStatus;
+  userCd?: string | null,
+  name?: string | null;
+  furigana?: string | null;
+  status? : SeatStatus | null;
 }
 
 type SeatStatus = 'add' | 'delete' | 'update';

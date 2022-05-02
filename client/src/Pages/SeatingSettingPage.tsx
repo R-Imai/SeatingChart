@@ -1,60 +1,47 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router';
 
-import {seatImg as seatImgOriginal} from '../tmp/seatImg';
 import Seats from '../Components/Seats';
 import EditPageHeader from '../Components/EditPageHeader';
 import SeatEditDialog from '../Components/SeatEditDialog';
+import Indicator from '../Components/Indicator';
 
-const seatsInfoOriginal:SeatInfo[] = [
-  {
-    id: 'a',
-    x: 310,
-    y: 271,
-  },
-  {
-    id: 'b',
-    x: 309,
-    y: 357,
-  },
-  {
-    id: 'c',
-    x: 307,
-    y: 449,
-  },
-  {
-    id: 'd',
-    x: 402,
-    y: 445,
-  },
-  {
-    id: 'e',
-    x: 398,
-    y: 358,
-  },
-  {
-    id: 'f',
-    x: 400,
-    y: 266
-  },
-  {
-    id: 'g',
-    x: 161,
-    y: 146
-  }
-];
+import {getChart, getSeats, updateSeats, SeatParameter} from '../Actions/SeatingChart';
+import { info } from 'console';
+import SeatInfoDialog from '../Components/SeatInfoDialog';
 
-const SeatingSettingPage: React.FC<RouteComponentProps<{chartCd?: string}>> = (props) => {
+
+const SeatingSettingPage: React.FC<RouteComponentProps<{chartCd: string}>> = (props) => {
 
   const [seatImg, setSeatImg] = React.useState('');
   const [seatsInfo, setSeatsInfo] = React.useState<SeatInfo[]>([]);
   const [selectSeat, setSelectSeat] = React.useState<SeatInfo|null>(null);
   const [seatCounter, setSeatCounter] = React.useState(0);
+  const [isShowIndicator, setShowIndicator] = React.useState(false);
+  
+  const chartCd = props.match.params.chartCd;
+
+  const _getSeatsInfo = async () => {
+    const response = await getSeats(chartCd);
+    setSeatsInfo(response.map(data => {
+      return{
+        id: data.seat_id,
+        x: data.x,
+        y: data.y,
+      }
+    }));  
+  }
 
   React.useEffect(() => {
-    console.log("start");
-    setSeatImg(seatImgOriginal);
-    setSeatsInfo(seatsInfoOriginal);
+    (async () => {
+      setShowIndicator(true);
+      const response = await Promise.all([
+        getChart(chartCd),
+        _getSeatsInfo()
+      ])
+      setSeatImg(response[0].image);
+      setShowIndicator(false);
+    })();
   }, []);
 
   const onClickSeat = (seatInfo: SeatInfo) => {
@@ -92,11 +79,32 @@ const SeatingSettingPage: React.FC<RouteComponentProps<{chartCd?: string}>> = (p
     setSelectSeat(null);
   }
 
+  const onClickRegister = async () => {
+    interface FilterdSeatInfo extends SeatInfo {
+      status: SeatStatus;
+    }
+    const requestBody:SeatParameter[] = seatsInfo.filter((info): info is FilterdSeatInfo => {
+      return typeof info.status !== 'undefined' && info.status !== null;
+    }).map(info => {
+      return {
+        seat_id: info.id,
+        x: info.x,
+        y: info.y,
+        status: info.status
+      }
+    })
+    setShowIndicator(true);
+    await updateSeats(chartCd, requestBody);
+    await _getSeatsInfo();
+    setShowIndicator(false);
+  }
+
   return (
-    <div>
-      <EditPageHeader seatInfo={seatsInfo} onClickRegister={() => {}}/>
+    <div className='indicator-parent'>
+      <EditPageHeader seatInfo={seatsInfo} onClickRegister={onClickRegister}/>
       <Seats seatsInfo={seatsInfo} seatImg={seatImg} onClickSeat={onClickSeat} onClickMap={onClickMap}/>
       {selectSeat !== null ? <SeatEditDialog seatInfo={selectSeat} onClose={() => {setSelectSeat(null)}} onUpdate={(x, y) => {onUpdate(selectSeat, x, y)}} onDelete={() => {onDelete(selectSeat)}}/> : ''}
+      <Indicator show={isShowIndicator}/>
     </div>
   );
 }

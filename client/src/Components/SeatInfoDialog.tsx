@@ -3,12 +3,39 @@ import React from 'react';
 type Props = {
   seatInfo: SeatInfo;
   onClose: () => void;
-  onRegister: () => void;
+  onRegister: (seatInfo: SeatInfo) => void;
+}
+
+const mkFormValue = (value?: string | null) => {
+  return typeof value === 'undefined' || value === null? '': value
+}
+
+const isNullable = (value?: string | null) => {
+  return typeof value === 'undefined' || value === null || value === ''
 }
 
 const SeatInfoDialog: React.FC<Props> = (props) => {
 
-  const isEmpty = typeof props.seatInfo.userCd === 'undefined' || props.seatInfo.userCd === '';
+  const [userCd, setUserCd] = React.useState(props.seatInfo.userCd);
+  const [name, setName] = React.useState(props.seatInfo.name);
+  const [furigana, setFurigana] = React.useState(props.seatInfo.furigana);
+
+  const isEmpty = typeof props.seatInfo.userCd === 'undefined' || props.seatInfo.userCd === null || props.seatInfo.userCd === '';
+
+  const onRegister = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const updateInfo = {...props.seatInfo, ...{
+      userCd: userCd,
+      name: name,
+      furigana: furigana
+    }};
+    
+    props.onRegister(updateInfo)
+  }
+
+  const isDisabled = () => {
+    return isNullable(userCd) || isNullable(name) || isNullable(furigana)
+  }
 
   return (
     <div className='dialog'>
@@ -16,26 +43,26 @@ const SeatInfoDialog: React.FC<Props> = (props) => {
         <h1>座席情報</h1>
         <form className='seatinfo-form'>
           <label className='label'>ユーザコード</label>
-          { isEmpty ? <input className='input-form'/> : (
+          { isEmpty ? <input className='input-form' value={mkFormValue(userCd)} onChange={(e) => {setUserCd(e.target.value)}}/> : (
           <div className='info-value'>
             <span>{props.seatInfo.userCd}</span>
           </div>
           )}
           <label className='label'>名前</label>
-          { isEmpty ? <input className='input-form'/> : (
+          { isEmpty ? <input className='input-form' value={mkFormValue(name)} onChange={(e) => {setName(e.target.value)}}/> : (
           <div className='info-value'>
             <span>{props.seatInfo.name}</span>
           </div>
           )}
           <label className='label'>ふりがな</label>
-          { isEmpty ? <input className='input-form'/> : (
+          { isEmpty ? <input className='input-form' value={mkFormValue(furigana)} onChange={(e) => {setFurigana(e.target.value)}}/> : (
           <div className='info-value'>
             <span>{props.seatInfo.furigana}</span>
           </div>
           )}
           <div className='btn-space'>
             <button type='button' onClick={(e) => {e.preventDefault(); props.onClose();}}>閉じる</button>
-            { isEmpty ? (<button className='info' type='button' onClick={() => {}}>登録</button>) : ''}
+            { isEmpty ? (<button className='info' type='button' disabled={isDisabled()} onClick={onRegister}>登録</button>) : (<button className='danger' type='button' onClick={() => {}}>削除</button>)}
           </div>
         </form>
       </div>

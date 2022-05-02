@@ -31,6 +31,12 @@ class UserInfo(BaseModel):
   furigana: str
   create_date: Optional[datetime]
 
+class UserRegisterInfo(BaseModel):
+  seat_id: str
+  user_cd: str
+  name: str
+  furigana: str
+
 class SeatUserInfo(BaseModel): 
   seat_id: str
   x: int
