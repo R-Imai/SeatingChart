@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import Optional, Literal
 from datetime import datetime
 
 class AppInfo(BaseModel):
@@ -18,6 +18,12 @@ class SeatInfo(BaseModel):
   x: int
   y: int
 
+class SeatUpdateInfo(BaseModel):
+  seat_id: Optional[str]
+  x: int
+  y: int
+  status: Optional[Literal['add', 'update', 'delete']]
+
 class UserInfo(BaseModel):
   user_cd: str
   seat_id: str
@@ -33,3 +39,12 @@ class SeatUserInfo(BaseModel):
   name: Optional[str]
   furigana: Optional[str]
   create_date: Optional[datetime]
+
+class ResponseSeatingCharts(BaseModel):
+  data: list[SeatingChart]
+
+class ResponseSeatInfo(BaseModel):
+  data: list[SeatInfo]
+
+class ResponseSeatUserInfo(BaseModel):
+  data: list[SeatUserInfo]

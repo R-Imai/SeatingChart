@@ -1,6 +1,2 @@
-numpy
-pandas
-matplotlib
-fastapi >= 0.52.0
-uvicorn[standard]
+fastapi[all]
 psycopg2

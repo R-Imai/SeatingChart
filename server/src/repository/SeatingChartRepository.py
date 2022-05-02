@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List, Optional
 
 from ..model import Model as model
 
@@ -13,12 +12,14 @@ class SeatingChartRepository:
 
     self.sql_insert_seat = "INSERT INTO seat_info (seat_id, chart_cd, x, y) VALUES (%(seat_id)s, %(chart_cd)s, %(x)s, %(y)s);"
     self.sql_select_seat_list = "SELECT seat_id, chart_cd, x, y FROM seat_info WHERE chart_cd=%s;"
+    self.sql_select_seat = "SELECT seat_id, chart_cd, x, y FROM seat_info WHERE chart_cd=%s AND seat_id=%s;"
     self.sql_update_seat = "UPDATE seat_info SET chart_cd=%(chart_cd)s, x=%(x)s, y=%(y)s WHERE seat_id=%(seat_id)s;"
     self.sql_delete_seat = "DELETE FROM seat_info WHERE seat_id=%s;"
 
     self.sql_insert_user = "INSERT INTO user_info (user_cd, seat_id, name, furigana, create_date) VALUES (%(user_cd)s, %(seat_id)s, %(name)s, %(furigana)s, %(create_date)s);"
     self.sql_delete_user = "DELETE FROM user_info WHERE seat_id=%s;"
     self.sql_delete_user_batch = "DELETE FROM user_info WHERE create_date<%s;"
+    self.sql_select_user = "SELECT user_cd, seat_id, name, furigana, create_date FROM user_info WHERE seat_id=%s"
     self.sql_select_seat_user_list = """
       SELECT
         seat_info.seat_id,
@@ -49,8 +50,8 @@ class SeatingChartRepository:
       return None
     return model.SeatingChart(chart_cd=result[0], name=result[1], image=result[2].tobytes())
 
-  def select_chart_list(self, cur) -> List[model.SeatingChart]:
-    cur.execute(self.sql_select_chart)
+  def select_chart_list(self, cur) -> list[model.SeatingChart]:
+    cur.execute(self.sql_select_chart_list)
     rows = cur.fetchall()
     return list(map(lambda x: model.SeatingChart(chart_cd=x[0], name=x[1], image=x[2].tobytes()), rows))
 
@@ -74,10 +75,17 @@ class SeatingChartRepository:
     )
     cur.execute(self.sql_insert_seat, query_param)
 
-  def select_seat_list(self, cur, chart_cd:str) -> List[model.SeatInfo]:
+  def select_seat_list(self, cur, chart_cd:str) -> list[model.SeatInfo]:
     cur.execute(self.sql_select_seat_list, (chart_cd,))
     rows = cur.fetchall()
-    return list(map(lambda x: model.SeatInfo(seat_id=x[0], chart_cd=x[1], x=x[2], y=y[3]), rows))
+    return list(map(lambda x: model.SeatInfo(seat_id=x[0], chart_cd=x[1], x=x[2], y=x[3]), rows))
+  
+  def select_seat(self, cur, chart_cd:str, seat_id:str):
+    cur.execute(self.sql_select_seat, (chart_cd, seat_id))
+    result = cur.fetchone()
+    if result is None:
+      return None
+    return model.SeatInfo(seat_id=result[0], chart_cd=result[1], x=result[2], y=result[3])
 
   def update_seat(self, cur, seat_info:model.SeatInfo) -> None:
     query_param = dict(
@@ -89,9 +97,9 @@ class SeatingChartRepository:
     cur.execute(self.sql_update_seat, query_param)
 
   def delete_seat(self, cur, seat_id:str) -> None:
-    cur.execute(self.sql_delete_chart, (seat_id,))
+    cur.execute(self.sql_delete_seat, (seat_id,))
 
-  def insert_user(self, cur, user_info=model.UserInfo) -> None:
+  def insert_user(self, cur, user_info:model.UserInfo) -> None:
     query_param = dict(
       user_cd = user_info.user_cd,
       seat_id = user_info.seat_id,
@@ -107,8 +115,15 @@ class SeatingChartRepository:
   def delete_user_batch(self, cur, target_time:datetime) -> None:
     cur.execute(self.sql_delete_user_batch, (target_time,))
 
-  def select_seat_user_list(self, cur, chart_cd:str) -> List[model.SeatUserInfo]:
-    cur.execute(self.sql_delete_user, (chart_cd,))
+  def select_user(self, cur, seat_id:str):
+    cur.execute(self.sql_select_user, (seat_id,))
+    result = cur.fetchone()
+    if result is None:
+      return None
+    return model.UserInfo(user_cd=result[0], seat_id=result[1], name=result[2], furigana=result[3], create_date=result[4])
+
+  def select_seat_user_list(self, cur, chart_cd:str) -> list[model.SeatUserInfo]:
+    cur.execute(self.sql_select_seat_user_list, (chart_cd,))
     rows = cur.fetchall()
-    return list(map(lambda x: model.SeatingChart(seat_id=x[0], x=x[1], y=x[2], user_cd=x[3], name=x[4], furigana=x[5], create_date=x[6]), rows))
+    return list(map(lambda x: model.SeatUserInfo(seat_id=x[0], x=x[1], y=x[2], user_cd=x[3], name=x[4], furigana=x[5], create_date=x[6]), rows))
 
