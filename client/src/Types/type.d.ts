@@ -9,3 +9,9 @@ interface SeatInfo {
 }
 
 type SeatStatus = 'add' | 'delete' | 'update';
+
+interface ChartInfo {
+  chartCd: string;
+  name: string;
+  image: string;
+}

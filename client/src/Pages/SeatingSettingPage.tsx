@@ -1,5 +1,6 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router';
+import axios from 'axios';
 
 import Seats from '../Components/Seats';
 import EditPageHeader from '../Components/EditPageHeader';
@@ -7,8 +8,6 @@ import SeatEditDialog from '../Components/SeatEditDialog';
 import Indicator from '../Components/Indicator';
 
 import {getChart, getSeats, updateSeats, SeatParameter} from '../Actions/SeatingChart';
-import { info } from 'console';
-import SeatInfoDialog from '../Components/SeatInfoDialog';
 
 
 const SeatingSettingPage: React.FC<RouteComponentProps<{chartCd: string}>> = (props) => {
@@ -35,13 +34,23 @@ const SeatingSettingPage: React.FC<RouteComponentProps<{chartCd: string}>> = (pr
   React.useEffect(() => {
     (async () => {
       setShowIndicator(true);
-      const response = await Promise.all([
-        getChart(chartCd),
-        _getSeatsInfo()
-      ])
-      setSeatImg(response[0].image);
+      try {
+        const response = await Promise.all([
+          getChart(chartCd),
+          _getSeatsInfo()
+        ])
+        setSeatImg(response[0].image);
+      } catch (e) {
+        if(axios.isAxiosError(e)) {
+          if (e.response?.status === 404) {
+            // props.history.push('/error/notfound');
+            window.location.href = '/error/notfound';
+          }
+        }
+      }
       setShowIndicator(false);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onClickSeat = (seatInfo: SeatInfo) => {

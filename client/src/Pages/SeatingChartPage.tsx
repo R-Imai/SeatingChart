@@ -1,12 +1,13 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router';
+import axios from 'axios';
 
 import Seats from '../Components/Seats';
 import SearchForm from '../Components/SearchForm';
 import SeatInfoDialog from '../Components/SeatInfoDialog';
 import Indicator from '../Components/Indicator';
 
-import {getChart, getUserSeats, registerUser, UserSeatParam} from '../Actions/SeatingChart';
+import {getChart, getUserSeats, registerUser, deleteUser, UserSeatParam} from '../Actions/SeatingChart';
 
 const isNullable = (value?: string | null): value is null | undefined => {
   return typeof value === 'undefined' || value === null;
@@ -39,13 +40,23 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
   React.useEffect(() => {
     (async () => {
       setShowIndicator(true);
-      const response = await Promise.all([
-        getChart(chartCd),
-        _getUserSeatsInfo()
-      ])
-      setSeatImg(response[0].image);
+      try  {
+        const response = await Promise.all([
+          getChart(chartCd),
+          _getUserSeatsInfo()
+        ])
+        setSeatImg(response[0].image);
+      } catch (e) {
+        if(axios.isAxiosError(e)) {
+          if (e.response?.status === 404) {
+            // props.history.push('/error/notfound');
+            window.location.href = '/error/notfound';
+          }
+        }
+      }
       setShowIndicator(false);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onClickSeat = (seatInfo: SeatInfo) => {
@@ -54,7 +65,6 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
 
   const onRegister = async (seatInfo: SeatInfo) => {
     setSelectSeat(null);
-    console.log(seatInfo);
     if (isNullable(seatInfo.userCd) || isNullable(seatInfo.name) || isNullable(seatInfo.furigana)) {
       return
     }
@@ -70,11 +80,27 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
     setShowIndicator(false);
   }
 
+  const onDelete = async () => {
+    if (selectSeat === null) {
+      return;
+    }
+    const deleteTargetSeatId = selectSeat.id;
+    const deleteTargetUserCd = selectSeat.userCd;
+    if (typeof deleteTargetUserCd === 'undefined' || deleteTargetUserCd === null) {
+      return;
+    }
+    setSelectSeat(null);
+    setShowIndicator(true);
+    await deleteUser(deleteTargetSeatId, deleteTargetUserCd);
+    await _getUserSeatsInfo();
+    setShowIndicator(false);
+  }
+
   return (
     <div className='indicator-parent'>
       <SearchForm onClickSearch={setSearchText}/>
       <Seats seatsInfo={seatsInfo} seatImg={seatImg} searchText={searchText} onClickSeat={onClickSeat}/>
-      {selectSeat !== null ? <SeatInfoDialog seatInfo={selectSeat} onClose={() => {setSelectSeat(null)}} onRegister={onRegister}/> : ''}
+      {selectSeat !== null ? <SeatInfoDialog seatInfo={selectSeat} onClose={() => {setSelectSeat(null)}} onRegister={onRegister} onDelete={onDelete}/> : ''}
       <Indicator show={isShowIndicator}/>
     </div>
   );

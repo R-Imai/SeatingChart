@@ -9,8 +9,6 @@ type Props = {
 
 const SeatEditDialog: React.FC<Props> = (props) => {
 
-  const isEmpty = typeof props.seatInfo.userCd === 'undefined' || props.seatInfo.userCd === '';
-
   const [x, setX] = React.useState(props.seatInfo.x);
   const [y, setY] = React.useState(props.seatInfo.y);
 
@@ -34,7 +32,7 @@ const SeatEditDialog: React.FC<Props> = (props) => {
           <div className='btn-space'>
             {props.seatInfo.status !== 'delete' ? <button className='danger' type='button' onClick={(e) => {e.preventDefault(); props.onDelete();}}>削除</button> : ''}
             <button type='button' onClick={(e) => {e.preventDefault(); props.onClose();}}>閉じる</button>
-            <button className='info' type='button' onClick={(e) => {e.preventDefault(); props.onUpdate(x, y);}}> {props.seatInfo.status === 'delete'? '元に戻す' : '更新'}</button>
+            <button className='info' type='submit' onClick={(e) => {e.preventDefault(); props.onUpdate(x, y);}}> {props.seatInfo.status === 'delete'? '元に戻す' : '更新'}</button>
           </div>
         </form>
       </div>

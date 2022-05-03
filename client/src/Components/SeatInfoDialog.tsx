@@ -4,6 +4,7 @@ type Props = {
   seatInfo: SeatInfo;
   onClose: () => void;
   onRegister: (seatInfo: SeatInfo) => void;
+  onDelete: () => void;
 }
 
 const mkFormValue = (value?: string | null) => {
@@ -62,7 +63,7 @@ const SeatInfoDialog: React.FC<Props> = (props) => {
           )}
           <div className='btn-space'>
             <button type='button' onClick={(e) => {e.preventDefault(); props.onClose();}}>閉じる</button>
-            { isEmpty ? (<button className='info' type='button' disabled={isDisabled()} onClick={onRegister}>登録</button>) : (<button className='danger' type='button' onClick={() => {}}>削除</button>)}
+            { isEmpty ? (<button className='info' type='button' disabled={isDisabled()} onClick={onRegister}>登録</button>) : (<button className='danger' type='button' onClick={(e) => {e.preventDefault(); props.onDelete()}}>削除</button>)}
           </div>
         </form>
       </div>
