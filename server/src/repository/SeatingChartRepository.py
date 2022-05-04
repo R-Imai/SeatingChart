@@ -15,6 +15,7 @@ class SeatingChartRepository:
     self.sql_select_seat = "SELECT seat_id, chart_cd, x, y FROM seat_info WHERE chart_cd=%s AND seat_id=%s;"
     self.sql_update_seat = "UPDATE seat_info SET chart_cd=%(chart_cd)s, x=%(x)s, y=%(y)s WHERE seat_id=%(seat_id)s;"
     self.sql_delete_seat = "DELETE FROM seat_info WHERE seat_id=%s;"
+    self.sql_delete_seat_by_chart_cd = "DELETE FROM seat_info WHERE chart_cd=%s;"
 
     self.sql_insert_user = "INSERT INTO user_info (user_cd, seat_id, name, furigana, create_date) VALUES (%(user_cd)s, %(seat_id)s, %(name)s, %(furigana)s, %(create_date)s);"
     self.sql_delete_user = "DELETE FROM user_info WHERE seat_id=%s;"
@@ -98,6 +99,9 @@ class SeatingChartRepository:
 
   def delete_seat(self, cur, seat_id:str) -> None:
     cur.execute(self.sql_delete_seat, (seat_id,))
+
+  def delete_seat_by_chart_cd(self, cur, chart_cd:str) -> None:
+    cur.execute(self.sql_delete_seat_by_chart_cd, (chart_cd,))
 
   def insert_user(self, cur, user_info:model.UserInfo) -> None:
     query_param = dict(

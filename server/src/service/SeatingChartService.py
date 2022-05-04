@@ -94,6 +94,7 @@ class SeatingChartService:
       conn = connection.mk_connection()
       with conn.cursor() as cur:
         self.repository.delete_chart(cur, chart_cd)
+        self.repository.delete_seat_by_chart_cd(cur, chart_cd)
       conn.commit()
     except Exception as e:
       conn.rollback()

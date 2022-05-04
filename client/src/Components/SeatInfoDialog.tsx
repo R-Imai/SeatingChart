@@ -42,7 +42,7 @@ const SeatInfoDialog: React.FC<Props> = (props) => {
     <div className='dialog'>
       <div className='dialog-content'>
         <h1>座席情報</h1>
-        <form className='seatinfo-form'>
+        <form className='form'>
           <label className='label'>ユーザコード</label>
           { isEmpty ? <input className='input-form' value={mkFormValue(userCd)} onChange={(e) => {setUserCd(e.target.value)}}/> : (
           <div className='info-value'>

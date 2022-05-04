@@ -26,7 +26,7 @@ const NotFoundPage: React.FC<RouteComponentProps> = (props) => {
   }, []);
 
   const jumpPage = () => {
-    window.location.href = `/${targetChartCd}`
+    window.location.href = `/seats/${targetChartCd}`
   }
 
   return (

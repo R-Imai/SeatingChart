@@ -24,7 +24,7 @@ const SeatEditDialog: React.FC<Props> = (props) => {
     <div className='dialog'>
       <div className='dialog-content'>
         <h1>座席情報</h1>
-        <form className='seatinfo-form'>
+        <form className='form'>
           <label className='label'>X座標</label>
           <input className='input-form' value={x} type='number' onChange={(e) => {setX(parseInt(e.target.value))}}/>
           <label className='label'>Y座標</label>
