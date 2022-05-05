@@ -7,7 +7,7 @@ import SearchForm from '../Components/SearchForm';
 import SeatInfoDialog from '../Components/SeatInfoDialog';
 import Indicator from '../Components/Indicator';
 
-import {getChart, getUserSeats, registerUser, deleteUser, UserSeatParam} from '../Actions/SeatingChart';
+import {getChart, getUserSeats, registerUser, deleteUser, getChartList, UserSeatParam} from '../Actions/SeatingChart';
 
 const isNullable = (value?: string | null): value is null | undefined => {
   return typeof value === 'undefined' || value === null;
@@ -20,6 +20,8 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
   const [searchText, setSearchText] = React.useState('');
   const [selectSeat, setSelectSeat] = React.useState<SeatInfo|null>(null);
   const [isShowIndicator, setShowIndicator] = React.useState(false);
+  const [chartList, setChartList] = React.useState<ChartInfo[]>();
+  const [chartName, setChartName] = React.useState('');
 
   const chartCd = props.match.params.chartCd;
 
@@ -43,9 +45,18 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
       try  {
         const response = await Promise.all([
           getChart(chartCd),
-          _getUserSeatsInfo()
+          _getUserSeatsInfo(),
+          getChartList()
         ])
         setSeatImg(response[0].image);
+        setChartName(response[0].name);
+        setChartList(response[2].map((chart) => {
+          return {
+            chartCd: chart.chart_cd,
+            name: chart.name,
+            image: chart.image,
+          }
+        }))
       } catch (e) {
         if(axios.isAxiosError(e)) {
           if (e.response?.status === 404) {
@@ -96,9 +107,14 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
     setShowIndicator(false);
   }
 
+  const jumpPage = (targetChartCd: string) => {
+    window.location.href = `/seats/${targetChartCd}`
+  }
+
   return (
     <div className='indicator-parent'>
-      <SearchForm onClickSearch={setSearchText}/>
+      <SearchForm chartList={chartList} onClickJumpPage={jumpPage} onClickSearch={setSearchText}/>
+      <h1>座席表({chartName})</h1>
       <Seats seatsInfo={seatsInfo} seatImg={seatImg} searchText={searchText} onClickSeat={onClickSeat}/>
       {selectSeat !== null ? <SeatInfoDialog seatInfo={selectSeat} onClose={() => {setSelectSeat(null)}} onRegister={onRegister} onDelete={onDelete}/> : ''}
       <Indicator show={isShowIndicator}/>

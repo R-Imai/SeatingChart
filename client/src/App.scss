@@ -264,6 +264,34 @@ h1 {
     border-bottom: #8f8600 solid 0.1rem;
     vertical-align: bottom;
   }
+  .select-chart {
+    select {
+      margin: 0 1rem;
+      font-size: 1rem;
+      border: #3d3d3d 0.2rem solid;
+      border-radius: 0.5rem;
+      background-color: #fafafa;
+      color: #3d3d3d;
+      font-weight: bolder;
+      box-shadow: 1px 1px 5px #3d3d3d;
+      cursor: pointer;
+      &:hover {
+        box-shadow: 0px 0px 5px #3d3d3d;
+        border: solid 0.2rem #909090;
+        background-color: #ffffff;
+      }
+      &:focus {
+        outline: none;
+        border: solid 0.2rem #909090;
+        box-shadow: 0px 0px 3px #3d3d3d;
+      }
+      option {
+        background-color: #3d3d3d;
+        color: #fafafa;
+        cursor: pointer;
+      }
+    }
+  }
 }
 
 .indicator-parent {
@@ -363,12 +391,12 @@ h1 {
     align-items: center;
     background-color: #ebfff7;
     &:hover {
-      background-color: #ebfff791;
+      background-color: #ebfff7aa;
     }
     &:nth-child(odd){
-      background-color: #b9ccc6;
+      background-color: #ccffef;
       &:hover {
-        background-color: #b9ccc691;
+        background-color: #ccffefaa;
       }
     }
     .name {

@@ -17,6 +17,7 @@ const SeatingSettingPage: React.FC<RouteComponentProps<{chartCd: string}>> = (pr
   const [selectSeat, setSelectSeat] = React.useState<SeatInfo|null>(null);
   const [seatCounter, setSeatCounter] = React.useState(0);
   const [isShowIndicator, setShowIndicator] = React.useState(false);
+  const [chartName, setChartName] = React.useState('');
   
   const chartCd = props.match.params.chartCd;
 
@@ -40,6 +41,7 @@ const SeatingSettingPage: React.FC<RouteComponentProps<{chartCd: string}>> = (pr
           _getSeatsInfo()
         ])
         setSeatImg(response[0].image);
+        setChartName(response[0].name);
       } catch (e) {
         if(axios.isAxiosError(e)) {
           if (e.response?.status === 404) {
@@ -108,9 +110,14 @@ const SeatingSettingPage: React.FC<RouteComponentProps<{chartCd: string}>> = (pr
     setShowIndicator(false);
   }
 
+  const onClickJumpSeatPage = () => {
+    window.location.href = `/seats/${chartCd}`
+  }
+
   return (
     <div className='indicator-parent'>
-      <EditPageHeader seatInfo={seatsInfo} onClickRegister={onClickRegister}/>
+      <EditPageHeader seatInfo={seatsInfo} onClickJumpSeatPage={onClickJumpSeatPage} onClickRegister={onClickRegister}/>
+      <h1>座席表設定({chartName})</h1>
       <Seats seatsInfo={seatsInfo} seatImg={seatImg} onClickSeat={onClickSeat} onClickMap={onClickMap}/>
       {selectSeat !== null ? <SeatEditDialog seatInfo={selectSeat} onClose={() => {setSelectSeat(null)}} onUpdate={(x, y) => {onUpdate(selectSeat, x, y)}} onDelete={() => {onDelete(selectSeat)}}/> : ''}
       <Indicator show={isShowIndicator}/>

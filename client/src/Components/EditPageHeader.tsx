@@ -3,6 +3,7 @@ import React from 'react';
 type Props ={
   seatInfo: SeatInfo[];
   onClickRegister: () => void;
+  onClickJumpSeatPage: () => void
 }
 
 
@@ -21,6 +22,7 @@ const EditPageHeader: React.FC<Props> = (props) => {
         ※ 「登録する」ボタンを押すまで変更は保存されません。
       </div>
       <button className='info' type='submit' onClick={(e) => {e.preventDefault(); props.onClickRegister()}}>登録する</button>
+      <button type='button' onClick={(e) => {e.preventDefault(); props.onClickJumpSeatPage()}}>座席表画面へ</button>
     </div>
   );
 }
