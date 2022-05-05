@@ -11,6 +11,7 @@ const NotFoundPage: React.FC<RouteComponentProps> = (props) => {
   const [targetChartCd, setTargetChartCd] = React.useState('');
 
   React.useEffect(() => {
+    window.document.title = 'ページが見つかりませんでした。 | Seating Chart';
     (async () => {
       setShowIndicator(true);
       const response = await getChartList();

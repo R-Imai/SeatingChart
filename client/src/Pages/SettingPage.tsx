@@ -23,6 +23,7 @@ const SettingPage: React.FC<RouteComponentProps> = (props) => {
   }
 
   React.useEffect(() => {
+    window.document.title = '設定 | Seating Chart';
     (async () => {
       setShowIndicator(true);
       await _getChartInfo();

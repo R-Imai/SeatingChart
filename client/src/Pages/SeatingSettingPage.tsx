@@ -33,6 +33,7 @@ const SeatingSettingPage: React.FC<RouteComponentProps<{chartCd: string}>> = (pr
   }
 
   React.useEffect(() => {
+    window.document.title = '座席表設定 | Seating Chart';
     (async () => {
       setShowIndicator(true);
       try {

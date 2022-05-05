@@ -3,7 +3,8 @@ export type ApiErrorData = {
 }
 
 export const API = {
-  UrlBase: "http://localhost:5555",
+  // UrlBase: "http://localhost:5555",
+  UrlBase: "",
   SeatingChart: {
     charts: "/api/charts",
     chartsList: "/api/charts/list",

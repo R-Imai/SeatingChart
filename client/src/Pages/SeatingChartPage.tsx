@@ -40,6 +40,7 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
   }
 
   React.useEffect(() => {
+    window.document.title = '座席表 | Seating Chart';
     (async () => {
       setShowIndicator(true);
       try  {
@@ -56,7 +57,7 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
             name: chart.name,
             image: chart.image,
           }
-        }))
+        }));
       } catch (e) {
         if(axios.isAxiosError(e)) {
           if (e.response?.status === 404) {

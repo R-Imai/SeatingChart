@@ -11,10 +11,9 @@ from src.exception import SeatingChartException
 
 app = FastAPI()
 origins = [
+  "http://localhost",
   "http://localhost:3000",
-  "http://127.0.0.1",
-  "http://192.168.1.20"
-  "http://192.168.1.18"
+  "http://127.0.0.1"
 ]
 
 app.add_middleware(
