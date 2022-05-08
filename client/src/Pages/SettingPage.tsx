@@ -120,7 +120,7 @@ const SettingPage: React.FC<RouteComponentProps> = (props) => {
           )
         })}
       </ul>
-      {selectChart !== null ? <ChartEditDialog chartInfo={selectChart} warningMssage={errorMessage} onRegister={onRegisterChart} onClose={() => {setSelectChart(null)}} onDelete={clickDelete}/> : ''}
+      {selectChart !== null ? <ChartEditDialog chartInfo={selectChart} warningMssage={errorMessage} onRegister={onRegisterChart} onClose={() => {setSelectChart(null); setErrorMessage('')}} onDelete={clickDelete}/> : ''}
       <Indicator show={isShowIndicator}/>
     </div>
   );
