@@ -141,17 +141,32 @@ h1 {
   min-width: 100vw;
   z-index: 9999;
   background-color: rgba(250, 250, 250, 0.8);
-  padding: 2rem;
   top: 0;
   left: 0;
   .dialog-content {
     background-color: #fafafa;
     border: #3d3d3d solid 0.3rem;
-    border-radius: 1.5rem;
+    border-radius: 1rem;
     max-width: 50rem;
+    max-height: calc(100vh - 10rem);
     margin: 0 auto;
     margin-top: 5rem;
     box-shadow: 0.5rem 0.5rem 0.5rem #3d3d3d7a;
+    overflow: auto;
+    &::-webkit-scrollbar{
+      width: 0.7rem;
+    }
+    &::-webkit-scrollbar-track{
+      background: #f0f0f0;
+      border: none;
+      border-radius: 2rem;
+    }
+    
+    &::-webkit-scrollbar-thumb{
+      background: #b6cac2;
+      border-radius: 2rem;
+      box-shadow: none;
+    }
     h1 {
       text-align: left;
       margin: 0;
@@ -159,7 +174,7 @@ h1 {
       overflow: hidden;
       font-size: 1.5rem;
       background: linear-gradient(135deg, #00cc77 0%, #c9cc009f 100%);
-      border-radius: 1.2rem 1.2rem 0 1.2rem;
+      border-radius: 0.7rem 0.7rem 0 0.7rem;
       box-shadow: 3px 3px 5px #23352c85;
       color: #fafafa;
       &::before {
@@ -168,6 +183,14 @@ h1 {
         margin-right: 0.6rem;
         margin-left: 0.6rem;
       }
+    }
+    .warn-msg {
+      margin: 0 2rem;
+      margin-top: 1rem;
+      border: 0.1rem solid #ff0077;
+      border-radius: 0.5rem;
+      padding: 0.2rem 0.5rem;
+      background-color: #ffe9f3;
     }
     .btn-space {
       margin: 0 5rem;
@@ -226,7 +249,7 @@ h1 {
   img {
     margin-right: 4.5rem;
     border: solid 0.2rem #3d3d3d;
-    max-height: 20rem;
+    max-height: 18rem;
   }
 }
 
@@ -303,8 +326,8 @@ h1 {
     justify-content: center;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background-color: rgba(#fafafa, 0.7);
     z-index: 99999;
     img {

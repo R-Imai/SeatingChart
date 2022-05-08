@@ -1,5 +1,6 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router';
+import axios from 'axios';
 
 import Indicator from '../Components/Indicator';
 import ChartEditDialog from '../Components/ChartEditDialog';
@@ -10,6 +11,7 @@ const SettingPage: React.FC<RouteComponentProps> = (props) => {
   const [isShowIndicator, setShowIndicator] = React.useState(false);
   const [chartList, setChartList] = React.useState<ChartInfo[]>();
   const [selectChart, setSelectChart] = React.useState<ChartInfo|null>(null);
+  const [errorMessage, setErrorMessage] = React.useState('');
 
   const _getChartInfo = async () => {
     const response = await getChartList();
@@ -49,19 +51,30 @@ const SettingPage: React.FC<RouteComponentProps> = (props) => {
       return;
     }
     const isNew = selectChart.chartCd === ''
+    setErrorMessage('');
 
     const requestBody:ChartParameter = {
       chart_cd: chartInfo.chartCd,
       name: chartInfo.name,
       image: chartInfo.image
     }
-    setSelectChart(null);
     setShowIndicator(true);
-    if (isNew) {
-      await registerChart(requestBody);
-    } else {
-      await updateChart(requestBody);
+    try {
+      if (isNew) {
+        await registerChart(requestBody);
+      } else {
+        await updateChart(requestBody);
+      }
+    } catch (e) {
+      if(axios.isAxiosError(e)) {
+        if (e.response?.status === 409) {
+          setShowIndicator(false);
+          setErrorMessage('既に使用されている座席表コードです。');
+          return;
+        }
+      }
     }
+    setSelectChart(null);
     await _getChartInfo();
     setShowIndicator(false);
   }
@@ -107,7 +120,7 @@ const SettingPage: React.FC<RouteComponentProps> = (props) => {
           )
         })}
       </ul>
-      {selectChart !== null ? <ChartEditDialog chartInfo={selectChart} onRegister={onRegisterChart} onClose={() => {setSelectChart(null)}} onDelete={clickDelete}/> : ''}
+      {selectChart !== null ? <ChartEditDialog chartInfo={selectChart} warningMssage={errorMessage} onRegister={onRegisterChart} onClose={() => {setSelectChart(null)}} onDelete={clickDelete}/> : ''}
       <Indicator show={isShowIndicator}/>
     </div>
   );

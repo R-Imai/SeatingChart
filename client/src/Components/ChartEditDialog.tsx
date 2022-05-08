@@ -2,6 +2,7 @@ import React from 'react';
 
 type Props = {
   chartInfo: ChartInfo;
+  warningMssage?: string;
   onClose: () => void;
   onRegister: (chartInfo: ChartInfo) => void;
   onDelete: () => void;
@@ -42,6 +43,7 @@ const ChartEditDialog: React.FC<Props> = (props) => {
     <div className='dialog'>
       <div className='dialog-content'>
         <h1>座席表情報</h1>
+        {typeof props.warningMssage !== 'undefined' && props.warningMssage !== '' ? <div className='warn-msg'>座席表コードが重複しています。</div>: ''}
         <form className='form'>
           <label className='label'>座席表コード</label>
           {isNew ? <input className='input-form' value={chartCd} onChange={(e) => {setChartCd(e.target.value)}}/> : (
