@@ -28,14 +28,14 @@ class UserInfo(BaseModel):
   user_cd: str
   seat_id: str
   name: str
-  furigana: str
+  furigana: Optional[str]
   create_date: Optional[datetime]
 
 class UserRegisterInfo(BaseModel):
   seat_id: str
   user_cd: str
   name: str
-  furigana: str
+  furigana: Optional[str]
 
 class SeatUserInfo(BaseModel): 
   seat_id: str

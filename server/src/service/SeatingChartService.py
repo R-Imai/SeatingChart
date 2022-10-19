@@ -21,7 +21,7 @@ class SeatingChartService:
     return is_empty(chart_info.chart_cd) or is_empty(chart_info.name) or is_empty(chart_info.image)
 
   def check_register_user_info(self, seat_user_info: model.UserRegisterInfo) -> bool:
-    return is_empty(seat_user_info.seat_id) or is_empty(seat_user_info.user_cd) or is_empty(seat_user_info.name) or is_empty(seat_user_info.furigana)
+    return is_empty(seat_user_info.seat_id) or is_empty(seat_user_info.user_cd) or is_empty(seat_user_info.name)
 
   def register_chart(self, chart_info:model.SeatingChart) -> None:
     if self.check_chart_info(chart_info):

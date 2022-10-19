@@ -27,7 +27,7 @@ export type UserSeatParam = {
   seat_id: string;
   user_cd: string;
   name: string;
-  furigana: string;
+  furigana?: string | null;
 }
 
 export type UserSeatResponse =   {

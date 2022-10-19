@@ -77,7 +77,7 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
 
   const onRegister = async (seatInfo: SeatInfo) => {
     setSelectSeat(null);
-    if (isNullable(seatInfo.userCd) || isNullable(seatInfo.name) || isNullable(seatInfo.furigana)) {
+    if (isNullable(seatInfo.userCd) || isNullable(seatInfo.name)) {
       return
     }
     const requestBody: UserSeatParam = {
