@@ -1,10 +1,13 @@
 import React from 'react';
 
+import {UserInfo} from '../Actions/UserStorage';
+
 type Props = {
   seatInfo: SeatInfo;
   onClose: () => void;
   onRegister: (seatInfo: SeatInfo) => void;
   onDelete: () => void;
+  defaultUserInfo?: UserInfo | null; 
 }
 
 const mkFormValue = (value?: string | null) => {
@@ -22,6 +25,15 @@ const SeatInfoDialog: React.FC<Props> = (props) => {
   const [furigana, setFurigana] = React.useState(props.seatInfo.furigana);
 
   const isEmpty = typeof props.seatInfo.userCd === 'undefined' || props.seatInfo.userCd === null || props.seatInfo.userCd === '';
+
+  React.useEffect(() => {
+    if (props.defaultUserInfo !== null && typeof props.defaultUserInfo !== 'undefined') {
+      setUserCd(props.defaultUserInfo.userCd);
+      setName(props.defaultUserInfo.name);
+      setFurigana(props.defaultUserInfo.furigana);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onRegister = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
