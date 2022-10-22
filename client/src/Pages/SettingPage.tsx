@@ -119,6 +119,14 @@ const SettingPage: React.FC<RouteComponentProps> = (props) => {
             </li>
           )
         })}
+        {chartList?.length === 0 ? (
+          <div className="empty-seat-info">
+            座席表データがありません。以下のボタンから新規作成してください。
+            <div>
+              <button className='info' type='submit' onClick={onClickAddChartButton}>新規追加する</button>
+            </div>
+          </div>
+        ):""}
       </ul>
       {selectChart !== null ? <ChartEditDialog chartInfo={selectChart} warningMssage={errorMessage} onRegister={onRegisterChart} onClose={() => {setSelectChart(null); setErrorMessage('')}} onDelete={clickDelete}/> : ''}
       <Indicator show={isShowIndicator}/>

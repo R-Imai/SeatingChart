@@ -445,3 +445,23 @@ h1 {
     }
   }
 }
+
+.empty-seat-info {
+  margin-top: 2rem;
+  margin-right: 5rem;
+  margin-left: 5rem;
+  padding: 2rem 5rem;
+  border-radius: 2rem;
+  border: solid 0.3rem #666666;
+  background-color: #fafafa;
+  height: 5rem;
+  text-align: center;
+  div {
+    margin-top: 1rem;
+    button {
+      height: 3rem;
+      width: 12rem;
+      font-size: 1.5rem;
+    }
+  }
+}
