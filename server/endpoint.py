@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, HTTPException
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.encoders import jsonable_encoder
 from starlette.responses import JSONResponse
@@ -33,7 +33,7 @@ def __mk_responce_json(model):
 # ルート
 @app.get("/api/", response_model=model.AppInfo)
 def root():
-  info = model.AppInfo(version="0.0.1")
+  info = model.AppInfo(version="1.0.0")
   return __mk_responce_json(info)
 
 
