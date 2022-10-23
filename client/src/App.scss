@@ -84,7 +84,7 @@ h1 {
   position: absolute;
   width: 50px;
   height: 40px;
-  background-color: #d3fff0;
+  background-color: #d3fff0cc;
   border: #008f64 solid 3px;
   line-height: 1;
   border-radius: 10px;
@@ -98,22 +98,22 @@ h1 {
 }
 
 .seat-empty {
-  background-color: #fafafa;
+  background-color: #fafafacc;
   border-color: #8f8f8f;
 }
 
 .seat-new {
-  background-color: #d3f5ff;
+  background-color: #d3f5ffcc;
   border-color: #004a8f;
 }
 
 .seat-delete {
-  background-color: #ffd3da9f;
-  border-color: #8f002b9f;
+  background-color: #ffd3dacc;
+  border-color: #8f002b;
 }
 
 .seat-update {
-  background-color: #fbffd3;
+  background-color: #fbffd3cc;
   border-color: #8f8600;
 }
 
