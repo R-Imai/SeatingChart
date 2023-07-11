@@ -1,10 +1,13 @@
 import React from 'react';
 
+import {UserInfo} from '../Actions/UserStorage';
+
 type Props = {
   seatInfo: SeatInfo;
   onClose: () => void;
   onRegister: (seatInfo: SeatInfo) => void;
   onDelete: () => void;
+  defaultUserInfo?: UserInfo | null; 
 }
 
 const mkFormValue = (value?: string | null) => {
@@ -23,6 +26,15 @@ const SeatInfoDialog: React.FC<Props> = (props) => {
 
   const isEmpty = typeof props.seatInfo.userCd === 'undefined' || props.seatInfo.userCd === null || props.seatInfo.userCd === '';
 
+  React.useEffect(() => {
+    if (props.defaultUserInfo !== null && typeof props.defaultUserInfo !== 'undefined') {
+      setUserCd(props.defaultUserInfo.userCd);
+      setName(props.defaultUserInfo.name);
+      setFurigana(props.defaultUserInfo.furigana);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const onRegister = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const updateInfo = {...props.seatInfo, ...{
@@ -35,7 +47,7 @@ const SeatInfoDialog: React.FC<Props> = (props) => {
   }
 
   const isDisabled = () => {
-    return isNullable(userCd) || isNullable(name) || isNullable(furigana)
+    return isNullable(userCd) || isNullable(name)
   }
 
   return (
@@ -43,13 +55,13 @@ const SeatInfoDialog: React.FC<Props> = (props) => {
       <div className='dialog-content'>
         <h1>座席情報</h1>
         <form className='form'>
-          <label className='label'>ユーザコード</label>
+          <label className='label required'>ユーザコード</label>
           { isEmpty ? <input className='input-form' value={mkFormValue(userCd)} onChange={(e) => {setUserCd(e.target.value)}}/> : (
           <div className='info-value'>
             <span>{props.seatInfo.userCd}</span>
           </div>
           )}
-          <label className='label'>名前</label>
+          <label className='label required'>名前</label>
           { isEmpty ? <input className='input-form' value={mkFormValue(name)} onChange={(e) => {setName(e.target.value)}}/> : (
           <div className='info-value'>
             <span>{props.seatInfo.name}</span>

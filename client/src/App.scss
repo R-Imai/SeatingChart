@@ -84,7 +84,7 @@ h1 {
   position: absolute;
   width: 50px;
   height: 40px;
-  background-color: #d3fff0;
+  background-color: #d3fff0cc;
   border: #008f64 solid 3px;
   line-height: 1;
   border-radius: 10px;
@@ -98,22 +98,22 @@ h1 {
 }
 
 .seat-empty {
-  background-color: #fafafa;
+  background-color: #fafafacc;
   border-color: #8f8f8f;
 }
 
 .seat-new {
-  background-color: #d3f5ff;
+  background-color: #d3f5ffcc;
   border-color: #004a8f;
 }
 
 .seat-delete {
-  background-color: #ffd3da9f;
-  border-color: #8f002b9f;
+  background-color: #ffd3dacc;
+  border-color: #8f002b;
 }
 
 .seat-update {
-  background-color: #fbffd3;
+  background-color: #fbffd3cc;
   border-color: #8f8600;
 }
 
@@ -223,6 +223,11 @@ h1 {
   &::before {
     content: "● ";
   }
+}
+
+.required::after {
+  content: "*";
+  color: #cc0055;
 }
 
 .input-form {
@@ -437,6 +442,26 @@ h1 {
     }
     .button {
       width: 10%;
+    }
+  }
+}
+
+.empty-seat-info {
+  margin-top: 2rem;
+  margin-right: 5rem;
+  margin-left: 5rem;
+  padding: 2rem 5rem;
+  border-radius: 2rem;
+  border: solid 0.3rem #666666;
+  background-color: #fafafa;
+  height: 5rem;
+  text-align: center;
+  div {
+    margin-top: 1rem;
+    button {
+      height: 3rem;
+      width: 12rem;
+      font-size: 1.5rem;
     }
   }
 }

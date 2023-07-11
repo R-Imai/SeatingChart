@@ -11,10 +11,10 @@ type Props = {
 }
 
 const isBlink = (seatInfo: SeatInfo, searchText?:string) => {
-  if (!seatInfo.userCd || !seatInfo.name || !seatInfo.furigana ||typeof searchText === 'undefined' ||searchText === '') {
+  if (!seatInfo.userCd || !seatInfo.name ||typeof searchText === 'undefined' ||searchText === '') {
     return;
   }
-  return seatInfo.userCd.indexOf(searchText) !== -1 || seatInfo.name.indexOf(searchText) !== -1 || seatInfo.furigana.indexOf(searchText) !== -1;
+  return seatInfo.userCd === searchText || seatInfo.name.indexOf(searchText) !== -1 || (seatInfo.furigana !== null && typeof seatInfo.furigana !== 'undefined' && seatInfo.furigana.indexOf(searchText) !== -1);
 }
 
 const Seats: React.FC<Props> = (props) => {

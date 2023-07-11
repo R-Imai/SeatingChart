@@ -1,5 +1,6 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router';
+import { useLocation } from "react-router-dom";
 import axios from 'axios';
 
 import Seats from '../Components/Seats';
@@ -8,6 +9,7 @@ import SeatInfoDialog from '../Components/SeatInfoDialog';
 import Indicator from '../Components/Indicator';
 
 import {getChart, getUserSeats, registerUser, deleteUser, getChartList, UserSeatParam} from '../Actions/SeatingChart';
+import {getUserInfoStorage, setUserInfoStorage, UserInfo} from '../Actions/UserStorage';
 
 const isNullable = (value?: string | null): value is null | undefined => {
   return typeof value === 'undefined' || value === null;
@@ -22,6 +24,7 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
   const [isShowIndicator, setShowIndicator] = React.useState(false);
   const [chartList, setChartList] = React.useState<ChartInfo[]>();
   const [chartName, setChartName] = React.useState('');
+  const [defaultUserInfo, setDefaultUserInfo] = React.useState<UserInfo|null>(null);
 
   const chartCd = props.match.params.chartCd;
 
@@ -38,6 +41,11 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
       }
     }));  
   }
+
+  const search = useLocation().search;
+  const query = new URLSearchParams(search);
+  const queryParam = query.get('search');
+  
 
   React.useEffect(() => {
     window.document.title = '座席表 | Seating Chart';
@@ -58,6 +66,8 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
             image: chart.image,
           }
         }));
+
+        window.document.title = `${response[0].name} | 座席表`;
       } catch (e) {
         if(axios.isAxiosError(e)) {
           if (e.response?.status === 404) {
@@ -68,6 +78,10 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
       }
       setShowIndicator(false);
     })();
+    setDefaultUserInfo(getUserInfoStorage());
+    if (queryParam) {
+      setSearchText(queryParam);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -77,9 +91,16 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
 
   const onRegister = async (seatInfo: SeatInfo) => {
     setSelectSeat(null);
-    if (isNullable(seatInfo.userCd) || isNullable(seatInfo.name) || isNullable(seatInfo.furigana)) {
+    if (isNullable(seatInfo.userCd) || isNullable(seatInfo.name)) {
       return
     }
+    const userInfo = {
+      userCd: seatInfo.userCd,
+      name: seatInfo.name,
+      furigana: seatInfo.furigana,
+    }
+    setUserInfoStorage(userInfo)
+    setDefaultUserInfo(userInfo)
     const requestBody: UserSeatParam = {
       seat_id: seatInfo.id,
       user_cd: seatInfo.userCd,
@@ -117,7 +138,7 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
       <SearchForm chartList={chartList} onClickJumpPage={jumpPage} onClickSearch={setSearchText}/>
       <h1>座席表({chartName})</h1>
       <Seats seatsInfo={seatsInfo} seatImg={seatImg} searchText={searchText} onClickSeat={onClickSeat}/>
-      {selectSeat !== null ? <SeatInfoDialog seatInfo={selectSeat} onClose={() => {setSelectSeat(null)}} onRegister={onRegister} onDelete={onDelete}/> : ''}
+      {selectSeat !== null ? <SeatInfoDialog seatInfo={selectSeat} onClose={() => {setSelectSeat(null)}} onRegister={onRegister} onDelete={onDelete} defaultUserInfo={defaultUserInfo}/> : ''}
       <Indicator show={isShowIndicator}/>
     </div>
   );
