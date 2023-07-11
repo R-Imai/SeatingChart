@@ -1,5 +1,6 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router';
+import { useLocation } from "react-router-dom";
 import axios from 'axios';
 
 import Seats from '../Components/Seats';
@@ -41,6 +42,11 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
     }));  
   }
 
+  const search = useLocation().search;
+  const query = new URLSearchParams(search);
+  const queryParam = query.get('search');
+  
+
   React.useEffect(() => {
     window.document.title = '座席表 | Seating Chart';
     (async () => {
@@ -60,6 +66,8 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
             image: chart.image,
           }
         }));
+
+        window.document.title = `${response[0].name} | 座席表`;
       } catch (e) {
         if(axios.isAxiosError(e)) {
           if (e.response?.status === 404) {
@@ -71,6 +79,9 @@ const SeatingChartPage: React.FC<RouteComponentProps<{chartCd: string}>> = (prop
       setShowIndicator(false);
     })();
     setDefaultUserInfo(getUserInfoStorage());
+    if (queryParam) {
+      setSearchText(queryParam);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
